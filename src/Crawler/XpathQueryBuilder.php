@@ -95,43 +95,58 @@ class XpathQueryBuilder
     /**
      * @param $class
      * @param $selector
+     *
+     * @return XpathQueryBuilder
      */
     public function addQueryByClass($class, $selector = "")
     {
         $this->query .= "//{$selector}[contains(concat(' ', normalize-space(@class), ' '), ' {$class} ')]";
+        return $this;
     }
 
     /**
      * @param $id
      * @param $selector
+     *
+     * @return XpathQueryBuilder
      */
     public function addQueryById($id, $selector = "")
     {
         $this->query .= "//{$selector}[contains(concat(' ', normalize-space(@id), ' '), ' {$id} ')]";
+        return $this;
     }
 
     /**
      * @param $selector
+     *
+     * @return XpathQueryBuilder
      */
     public function addQueryBySelector($selector)
     {
         $this->query .= "//{$selector}";
+        return $this;
     }
 
     /**
      * @param $index
+     *
+     * @return XpathQueryBuilder
      */
     public function addQueryIndex($index)
     {
         $this->query .= "[{$index}]";
+        return $this;
     }
 
     /**
      * @param $attribute
+     *
+     * @return XpathQueryBuilder
      */
     public function addQueryAttribute($attribute)
     {
         $this->query .= "/@{$attribute}";
+        return $this;
     }
 
     /**
