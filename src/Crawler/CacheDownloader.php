@@ -39,15 +39,6 @@ class CacheDownloader
     {
         $this->downloader = $downloader;
         $this->cacheDirectory = rtrim($cacheDirectory, "/") . "/";
-
-        if (!is_readable($this->cacheDirectory)) {
-            throw new \Exception("Cache directory \"{$this->cacheDirectory}\" is not readable");
-        }
-
-        if (!is_writable($this->cacheDirectory)) {
-            throw new \Exception("Cache directory \"{$this->cacheDirectory}\" is not writable");
-        }
-
         $this->cacheExtension = $cacheExtension;
     }
 
@@ -160,11 +151,22 @@ class CacheDownloader
     protected function setCache($content)
     {
         if (is_writable($this->getCacheFile())) {
+            if (!file_exists($this->getExtendedCacheDirectory())) {
+                $this->createCacheDirectory();
+            }
             file_put_contents($this->getCacheFile(), $content);
             return true;
         } else {
             return false;
         }
+    }
+
+    /**
+     * @return bool
+     */
+    protected function createCacheDirectory()
+    {
+        return mkdir($this->getExtendedCacheDirectory(), 0777, true);
     }
 
 }
