@@ -61,8 +61,28 @@ class CacheDownloader
             $content = $this->getCache();
         } else {
             $content = $this->downloader->getContent();
+            $this->setCache($content);
         }
         return $content;
+    }
+
+    /**
+     * @return \DOMDocument
+     */
+    public function getDomDocument()
+    {
+        $dom = new \DOMDocument();
+        @$dom->loadHTML($this->getContent());
+        return $dom;
+    }
+
+    /**
+     * @return \DOMXPath
+     */
+    public function getDomXpath()
+    {
+        $xpath = new \DOMXPath($this->getDomDocument());
+        return $xpath;
     }
 
     /**

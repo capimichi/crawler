@@ -33,6 +33,20 @@ abstract class Downloader
     public abstract function getContent();
 
     /**
+     * Get the DOMDocument of the downloaded content
+     *
+     * @return \DOMDocument
+     */
+    public abstract function getDomDocument();
+
+    /**
+     * Get the DOMXPath of the downloaded content
+     *
+     * @return \DOMXPath
+     */
+    public abstract function getDomXpath();
+
+    /**
      * @return string
      */
     public function getUrl()

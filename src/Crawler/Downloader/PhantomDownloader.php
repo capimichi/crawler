@@ -29,4 +29,26 @@ class PhantomDownloader extends Downloader
         return $response->getContent();
     }
 
+    /**
+     * @inheritdoc
+     */
+    public function getDomDocument()
+    {
+        $content = $this->getContent();
+        $dom = new \DOMDocument();
+        @$dom->loadHTML($content);
+        return $dom;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDomXpath()
+    {
+        $dom = $this->getDomDocument();
+        $xpath = new \DOMXPath($dom);
+        return $xpath;
+    }
+
+
 }
