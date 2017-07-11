@@ -1,0 +1,37 @@
+{
+    "name": "capimichi/crawler",
+    "description": "Crawler utils",
+    "authors": [
+        {
+            "name": "Michele Capicchioni",
+            "email": "capimichi@gmail.com"
+        }
+    ],
+    "scripts": {
+        "post-install-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ],
+        "post-update-cmd": [
+            "PhantomInstaller\\Installer::installPhantomJS"
+        ]
+    },
+    "autoload": {
+        "psr-4": {
+            "Crawler\\": "src/Crawler/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Crawler\\Test\\": "test/Crawler/"
+        }
+    },
+    "config": {
+        "bin-dir": "bin"
+    },
+    "require": {
+        "jonnyw/php-phantomjs": "4.*"
+    },
+    "require-dev": {
+        "phpunit/phpunit": "^6.2"
+    }
+}
