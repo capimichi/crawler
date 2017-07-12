@@ -38,6 +38,6 @@
         "composer/composer": "^1.4"
     },
     "extra": {
-        "class": "Crawler\\Composer\\Installer"
+        "class": "Crawler\\Composer\\Plugin"
     }
 }
