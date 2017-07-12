@@ -1,6 +1,7 @@
 {
     "name": "capimichi/crawler",
     "description": "Crawler utils",
+    "type": "composer-plugin",
     "authors": [
         {
             "name": "Michele Capicchioni",
@@ -32,6 +33,10 @@
         "jonnyw/php-phantomjs": "4.*"
     },
     "require-dev": {
-        "phpunit/phpunit": "^6.2"
+        "phpunit/phpunit": "^6.2",
+        "composer/composer": "^1.4"
+    },
+    "extra": {
+        "class": "Crawler\\Composer\\Installer"
     }
 }
