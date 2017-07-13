@@ -137,6 +137,14 @@ class CacheDownloader
     }
 
     /**
+     * @return Downloader
+     */
+    public function getDownloader()
+    {
+        return $this->downloader;
+    }
+
+    /**
      * @return bool|string
      */
     protected function getCache()
