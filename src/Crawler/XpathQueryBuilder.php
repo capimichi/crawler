@@ -165,4 +165,12 @@ class XpathQueryBuilder
     {
         return $this->domXpath->query("." . $this->query, $child);
     }
+
+    /**
+     * Clear the query
+     */
+    public function clearQuery()
+    {
+        $this->query = "";
+    }
 }
