@@ -20,7 +20,7 @@ class PhantomDownloaderTest extends TestCase
      */
     public function testCanDownload()
     {
-        $phantomDownloader = new PhantomDownloader("http://www.google.com");
+        $phantomDownloader = new PhantomDownloader("http://www.google.com/");
         $content = $phantomDownloader->getContent();
         self::assertNotEmpty($content);
     }

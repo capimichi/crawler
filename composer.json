@@ -1,7 +1,6 @@
 {
     "name": "capimichi/crawler",
     "description": "Crawler utils",
-    "type": "composer-plugin",
     "authors": [
         {
             "name": "Michele Capicchioni",
