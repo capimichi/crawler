@@ -35,8 +35,5 @@
     "require-dev": {
         "phpunit/phpunit": "^6.2",
         "composer/composer": "^1.4"
-    },
-    "extra": {
-        "class": "Crawler\\Composer\\Plugin"
     }
 }
