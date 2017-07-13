@@ -18,7 +18,9 @@ class Plugin implements PluginInterface
 {
     public function activate(Composer $composer, IOInterface $io)
     {
-        $io->ask("Quanti anni ha tua sorella?", null);
+        $config = $composer->getConfig()->has('config');
+        print_r($config);
+
         $installer = new PluginInstaller($io, $composer);
         $composer->getInstallationManager()->addInstaller($installer);
     }
