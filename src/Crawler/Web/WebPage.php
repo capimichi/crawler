@@ -20,6 +20,11 @@ class WebPage
     protected $xpathQueryBuilder;
 
     /**
+     * @var string
+     */
+    protected $url;
+
+    /**
      * WebPage constructor.
      * @param \DOMXPath $xpath
      */
@@ -60,5 +65,21 @@ class WebPage
         return null;
     }
 
+    /**
+     * @return string
+     */
+    public function getUrl()
+    {
+        return $this->url;
+    }
+
+    /**
+     * @param string $url
+     */
+    public function setUrl($url)
+    {
+        $this->url = $url;
+    }
+    
 
 }
