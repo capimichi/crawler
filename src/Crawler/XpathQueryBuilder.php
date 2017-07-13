@@ -100,7 +100,7 @@ class XpathQueryBuilder
      */
     public function addQueryByClass($class, $selector = "*")
     {
-        $this->query .= "//{$selector}[contains(concat(' ', normalize-space(@class), ' '), ' {$class} ')]";
+        $this->addQueryByAttribute("class", $class, $selector);
         return $this;
     }
 
@@ -112,7 +112,20 @@ class XpathQueryBuilder
      */
     public function addQueryById($id, $selector = "*")
     {
-        $this->query .= "//{$selector}[contains(concat(' ', normalize-space(@id), ' '), ' {$id} ')]";
+        $this->addQueryByAttribute("id", $id, $selector);
+        return $this;
+    }
+
+    /**
+     * @param $attribute
+     * @param $value
+     * @param $selector
+     *
+     * @return XpathQueryBuilder
+     */
+    public function addQueryByAttribute($attribute, $value, $selector = "*")
+    {
+        $this->query .= "//{$selector}[contains(concat(' ', normalize-space(@{$attribute}), ' '), ' {$value} ')]";
         return $this;
     }
 
@@ -143,7 +156,7 @@ class XpathQueryBuilder
      *
      * @return XpathQueryBuilder
      */
-    public function addQueryAttribute($attribute)
+    public function setQueryAttribute($attribute)
     {
         $this->query .= "/@{$attribute}";
         return $this;
@@ -173,4 +186,14 @@ class XpathQueryBuilder
     {
         $this->query = "";
     }
+
+    /**
+     * @return \DOMXPath
+     */
+    public function getDomXpath()
+    {
+        return $this->domXpath;
+    }
+
+
 }
