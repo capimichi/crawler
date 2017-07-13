@@ -98,7 +98,7 @@ class XpathQueryBuilder
      *
      * @return XpathQueryBuilder
      */
-    public function addQueryByClass($class, $selector = "")
+    public function addQueryByClass($class, $selector = "*")
     {
         $this->query .= "//{$selector}[contains(concat(' ', normalize-space(@class), ' '), ' {$class} ')]";
         return $this;
@@ -110,7 +110,7 @@ class XpathQueryBuilder
      *
      * @return XpathQueryBuilder
      */
-    public function addQueryById($id, $selector = "")
+    public function addQueryById($id, $selector = "*")
     {
         $this->query .= "//{$selector}[contains(concat(' ', normalize-space(@id), ' '), ' {$id} ')]";
         return $this;
