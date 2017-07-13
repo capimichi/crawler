@@ -18,8 +18,10 @@ class Plugin implements PluginInterface
 {
     public function activate(Composer $composer, IOInterface $io)
     {
-        $config = $composer->getConfig()->has('config');
-        print_r($config);
+        $config = (array)$composer->getConfig()->get('config');
+        if (!isset($config['bin-dir'])) {
+            $binDir = $io->ask("Chose your bin-dir [bin] ", "bin");
+        }
 
         $installer = new PluginInstaller($io, $composer);
         $composer->getInstallationManager()->addInstaller($installer);
