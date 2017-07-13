@@ -44,5 +44,21 @@ class WebPage
         return null;
     }
 
+    /**
+     * @return null|string
+     */
+    public function getMetaDescription()
+    {
+        $xpathQueryBuilder = $this->xpathQueryBuilder;
+        $xpathQueryBuilder->addQueryByAttribute('name', 'description', 'meta');
+        $descriptionNode = $xpathQueryBuilder->getResults();
+        if ($descriptionNode->length) {
+            $descriptionNode = $descriptionNode->item(0);
+            $description = $descriptionNode->nodeValue;
+            return $description;
+        }
+        return null;
+    }
+
 
 }
