@@ -150,15 +150,22 @@ class CacheDownloader
      */
     protected function setCache($content)
     {
-        if (is_writable($this->getCacheFile())) {
-            if (!file_exists($this->getExtendedCacheDirectory())) {
-                $this->createCacheDirectory();
+
+        if (!$this->isPresentCacheDirectory()) {
+            if (!$this->createCacheDirectory()) {
+                return false;
             }
-            file_put_contents($this->getCacheFile(), $content);
-            return true;
-        } else {
-            return false;
         }
+        file_put_contents($this->getCacheFile(), $content);
+        return true;
+    }
+
+    /**
+     * @return bool
+     */
+    protected function isPresentCacheDirectory()
+    {
+        return file_exists($this->getExtendedCacheDirectory());
     }
 
     /**
