@@ -15,22 +15,63 @@ class WebPage
 {
 
     /**
-     * @var XpathQueryBuilder
+     * @var string
      */
-    protected $xpathQueryBuilder;
+    protected $content;
 
     /**
      * @var string
      */
     protected $url;
 
+
     /**
      * WebPage constructor.
-     * @param \DOMXPath $xpath
+     * @param $url
+     * @param $content
      */
-    public function __construct(\DOMXPath $xpath)
+    public function __construct($url, $content)
     {
-        $this->xpathQueryBuilder = XpathQueryBuilder::createFromDomXpath($xpath);
+        $this->url = $url;
+        $this->content = $content;
+    }
+
+
+    /**
+     * @return string
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDomDocument()
+    {
+        $content = $this->getContent();
+        $dom = new \DOMDocument();
+        @$dom->loadHTML($content);
+        return $dom;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function getDomXpath()
+    {
+        $dom = $this->getDomDocument();
+        $xpath = new \DOMXPath($dom);
+        return $xpath;
+    }
+
+    /**
+     * @return XpathQueryBuilder
+     */
+    public function getXpathQueryBuilder()
+    {
+        return XpathQueryBuilder::createFromDomXpath($this->getDomXpath());
     }
 
     /**
@@ -38,7 +79,7 @@ class WebPage
      */
     public function getMetaTitle()
     {
-        $xpathQueryBuilder = $this->xpathQueryBuilder;
+        $xpathQueryBuilder = $this->getXpathQueryBuilder();
         $xpathQueryBuilder->addQueryBySelector('title');
         $titleNode = $xpathQueryBuilder->getResults();
         if ($titleNode->length) {
@@ -54,7 +95,7 @@ class WebPage
      */
     public function getMetaDescription()
     {
-        $xpathQueryBuilder = $this->xpathQueryBuilder;
+        $xpathQueryBuilder = $this->getXpathQueryBuilder();
         $xpathQueryBuilder->addQueryByAttribute('name', 'description', 'meta');
         $descriptionNode = $xpathQueryBuilder->getResults();
         if ($descriptionNode->length) {
@@ -73,13 +114,5 @@ class WebPage
         return $this->url;
     }
 
-    /**
-     * @param string $url
-     */
-    public function setUrl($url)
-    {
-        $this->url = $url;
-    }
-    
 
 }
