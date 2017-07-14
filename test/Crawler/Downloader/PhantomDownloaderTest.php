@@ -20,9 +20,17 @@ class PhantomDownloaderTest extends TestCase
      */
     public function testCanDownload()
     {
-        $phantomDownloader = new PhantomDownloader("http://www.google.com/");
+        $phantomDownloader = new PhantomDownloader("https://capimichi.github.io/crawler/test/download.json");
+
         $content = $phantomDownloader->getContent();
+
         self::assertNotEmpty($content);
+
+        preg_match('/\"status\": \"(.*?)\"/is', $content, $status);
+
+        $status = $status[1];
+
+        self::assertSame($status, 'OK');
     }
 
 }
