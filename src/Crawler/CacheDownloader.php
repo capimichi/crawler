@@ -29,6 +29,12 @@ class CacheDownloader
     protected $cacheExtension;
 
     /**
+     * @var float
+     */
+    protected $minimumCacheSize;
+
+
+    /**
      * CacheDownloader constructor.
      * @param Downloader $downloader
      * @param $cacheDirectory
@@ -40,6 +46,7 @@ class CacheDownloader
         $this->downloader = $downloader;
         $this->cacheDirectory = rtrim($cacheDirectory, "/") . "/";
         $this->cacheExtension = $cacheExtension;
+        $this->minimumCacheSize = 0;
     }
 
 
@@ -81,7 +88,10 @@ class CacheDownloader
      */
     public function isCached()
     {
-        return is_readable($this->getCacheFile());
+        if (is_readable($this->getCacheFile())) {
+            return $this->getMinimumCacheSize() ? ($this->getCacheSize() >= $this->getMinimumCacheSize()) : true;
+        }
+        return false;
     }
 
     /**
@@ -142,6 +152,38 @@ class CacheDownloader
     public function getDownloader()
     {
         return $this->downloader;
+    }
+
+    /**
+     * @param string $cacheExtension
+     */
+    public function setCacheExtension($cacheExtension)
+    {
+        $this->cacheExtension = $cacheExtension;
+    }
+
+    /**
+     * @return float
+     */
+    public function getMinimumCacheSize()
+    {
+        return $this->minimumCacheSize;
+    }
+
+    /**
+     * @param float $minimumCacheSize
+     */
+    public function setMinimumCacheSize($minimumCacheSize)
+    {
+        $this->minimumCacheSize = $minimumCacheSize;
+    }
+
+    /**
+     * @return int
+     */
+    protected function getCacheSize()
+    {
+        return filesize($this->getCacheFile());
     }
 
     /**
