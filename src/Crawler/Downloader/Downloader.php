@@ -27,11 +27,6 @@ abstract class Downloader
         'Opera 12.02'        => 'Opera/12.80 (Windows NT 5.1; U; en) Presto/2.10.289 Version/12.02',
         'Opera 12.00'        => 'Opera/9.80 (Windows NT 6.1; U; es-ES) Presto/2.9.181 Version/12.00',
         'Opera 11.62'        => 'Opera/9.80 (Windows NT 6.1; WOW64; U; pt) Presto/2.10.229 Version/11.62',
-        ''                   => '',
-        ''                   => '',
-        ''                   => '',
-        ''                   => '',
-        ''                   => '',
     ];
 
     const DEFAULT_USERAGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36';
