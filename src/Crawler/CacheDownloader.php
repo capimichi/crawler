@@ -13,6 +13,8 @@ use Crawler\Downloader\Downloader;
 
 class CacheDownloader
 {
+    const DEFAULT_MIN_CACHE_SIZE = 0;
+
     /**
      * @var Downloader
      */
@@ -31,12 +33,12 @@ class CacheDownloader
     /**
      * @var float
      */
-    protected $minimumCacheSize;
+    protected $minCacheSize;
 
     /**
-     * @var int
+     * @var array
      */
-    protected $maxRetries;
+    protected $strippedHtmlTags;
 
 
     /**
@@ -51,8 +53,8 @@ class CacheDownloader
         $this->downloader = $downloader;
         $this->cacheDirectory = rtrim($cacheDirectory, "/") . "/";
         $this->cacheExtension = $cacheExtension;
-        $this->minimumCacheSize = 0;
-        $this->maxRetries = 5;
+        $this->minCacheSize = 0;
+        $this->strippedHtmlTags = [];
     }
 
 
@@ -64,12 +66,8 @@ class CacheDownloader
         if ($this->isCached()) {
             $content = $this->getCache();
         } else {
-            $retries = 0;
-            do {
-                $retries++;
-                $content = $this->downloader->getContent();
-                $this->setCache($content);
-            } while (!$this->isCached() && $retries <= $this->getMaxRetries());
+            $content = $this->downloader->getContent();
+            $this->setCache($content);
         }
         return $content;
     }
@@ -99,7 +97,13 @@ class CacheDownloader
     public function isCached()
     {
         if (is_readable($this->getCacheFile())) {
-            return $this->getMinimumCacheSize() ? ($this->getCacheSize() >= $this->getMinimumCacheSize()) : true;
+            $isValidCache = true;
+            if ($this->getMinCacheSize()) {
+                if ($this->getCacheSize() < $this->getMinCacheSize()) {
+                    $isValidCache = false;
+                }
+            }
+            return $isValidCache;
         }
         return false;
     }
@@ -175,33 +179,42 @@ class CacheDownloader
     /**
      * @return float
      */
-    public function getMinimumCacheSize()
+    public function getMinCacheSize()
     {
-        return $this->minimumCacheSize;
+        return $this->minCacheSize;
     }
 
     /**
-     * @param float $minimumCacheSize
+     * @param float $minCacheSize
      */
-    public function setMinimumCacheSize($minimumCacheSize)
+    public function setMinCacheSize($minCacheSize)
     {
-        $this->minimumCacheSize = $minimumCacheSize;
+        $this->minCacheSize = $minCacheSize;
     }
 
     /**
-     * @return int
+     * @param $strippedHtmlTag
      */
-    public function getMaxRetries()
+    public function addStrippedHtmlTag($strippedHtmlTag)
     {
-        return $this->maxRetries;
+        array_push($this->strippedHtmlTags, $strippedHtmlTag);
+        $this->strippedHtmlTags = array_unique($this->strippedHtmlTags);
     }
 
     /**
-     * @param int $maxRetries
+     * @return array
      */
-    public function setMaxRetries($maxRetries)
+    public function getStrippedHtmlTags()
     {
-        $this->maxRetries = $maxRetries;
+        return $this->strippedHtmlTags;
+    }
+
+    /**
+     * @param array $strippedHtmlTags
+     */
+    public function setStrippedHtmlTags($strippedHtmlTags)
+    {
+        $this->strippedHtmlTags = $strippedHtmlTags;
     }
 
     /**
@@ -232,6 +245,12 @@ class CacheDownloader
                 return false;
             }
         }
+
+        foreach ($this->getStrippedHtmlTags() as $strippedHtmlTag) {
+            $pattern = sprintf("/<%s>.*?<\/%s>/is", $strippedHtmlTag, $strippedHtmlTag);
+            $content = preg_replace($pattern, "", $content);
+        }
+
         file_put_contents($this->getCacheFile(), $content);
         return true;
     }

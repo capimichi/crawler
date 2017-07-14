@@ -62,7 +62,6 @@ abstract class Downloader
     public function __construct($url)
     {
         $this->url = $url;
-
         $this->userAgent = Downloader::DEFAULT_USERAGENT;
         $this->timeout = Downloader::DEFAULT_TIMEOUT;
         $this->randomUserAgent = Downloader::DEFAULT_RANDOM_USERAGENT;
@@ -144,4 +143,6 @@ abstract class Downloader
     {
         $this->randomUserAgent = $randomUserAgent;
     }
+
+
 }

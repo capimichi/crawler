@@ -22,9 +22,27 @@ class PhantomDownloader extends Downloader
      */
     protected $phantomjsPath;
 
+    /**
+     * @var bool
+     */
+    protected $loadImages;
+
+    /**
+     * @var bool
+     */
+    protected $webSecurityEnabled;
+
+    /**
+     * @var bool
+     */
+    protected $javascriptEnabled;
+
     public function __construct($url)
     {
-        $this->setPhantomjsPath(realpath(self::PHANTOMJS_PATH));
+        $this->phantomjsPath = realpath(self::PHANTOMJS_PATH);
+        $this->loadImages = true;
+        $this->javascriptEnabled = true;
+        $this->webSecurityEnabled = true;
 
         parent::__construct($url);
     }
@@ -48,6 +66,14 @@ class PhantomDownloader extends Downloader
         } else {
             $request->addSetting('userAgent', $this->getUserAgent());
         }
+
+        $request->addSetting('javascriptEnabled', $this->isJavascriptEnabled());
+
+        $request->addSetting('loadImages', $this->isLoadImages());
+
+        $request->addSetting('webSecurityEnabled', $this->isWebSecurityEnabled());
+
+        $request->setTimeout($this->getTimeout());
 
         $response = $client->getMessageFactory()->createResponse();
 
@@ -91,6 +117,54 @@ class PhantomDownloader extends Downloader
     public function setPhantomjsPath($phantomjsPath)
     {
         $this->phantomjsPath = $phantomjsPath;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isLoadImages()
+    {
+        return $this->loadImages;
+    }
+
+    /**
+     * @param bool $loadImages
+     */
+    public function setLoadImages($loadImages)
+    {
+        $this->loadImages = $loadImages;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isWebSecurityEnabled()
+    {
+        return $this->webSecurityEnabled;
+    }
+
+    /**
+     * @param bool $webSecurityEnabled
+     */
+    public function setWebSecurityEnabled($webSecurityEnabled)
+    {
+        $this->webSecurityEnabled = $webSecurityEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isJavascriptEnabled()
+    {
+        return $this->javascriptEnabled;
+    }
+
+    /**
+     * @param bool $javascriptEnabled
+     */
+    public function setJavascriptEnabled($javascriptEnabled)
+    {
+        $this->javascriptEnabled = $javascriptEnabled;
     }
 
 
