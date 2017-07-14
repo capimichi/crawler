@@ -17,8 +17,6 @@ class PhantomDownloader extends Downloader
 
     const PHANTOMJS_PATH = __DIR__ . "/../../../bin/phantomjs";
 
-    const DEFAULT_USERAGENT = 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/37.0.2062.120 Safari/537.36';
-
     /**
      * @var string
      */
@@ -32,7 +30,7 @@ class PhantomDownloader extends Downloader
     public function __construct($url)
     {
         $this->setPhantomjsPath(realpath(self::PHANTOMJS_PATH));
-        $this->setUserAgent(self::DEFAULT_USERAGENT);
+        $this->setUserAgent(Downloader::DEFAULT_USERAGENT);
 
         parent::__construct($url);
     }
@@ -94,22 +92,6 @@ class PhantomDownloader extends Downloader
     public function setPhantomjsPath($phantomjsPath)
     {
         $this->phantomjsPath = $phantomjsPath;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserAgent()
-    {
-        return $this->userAgent;
-    }
-
-    /**
-     * @param string $userAgent
-     */
-    public function setUserAgent($userAgent)
-    {
-        $this->userAgent = $userAgent;
     }
 
 
