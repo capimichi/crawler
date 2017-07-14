@@ -22,15 +22,9 @@ class PhantomDownloader extends Downloader
      */
     protected $phantomjsPath;
 
-    /**
-     * @var string
-     */
-    protected $userAgent;
-
     public function __construct($url)
     {
         $this->setPhantomjsPath(realpath(self::PHANTOMJS_PATH));
-        $this->setUserAgent(Downloader::DEFAULT_USERAGENT);
 
         parent::__construct($url);
     }
@@ -44,11 +38,16 @@ class PhantomDownloader extends Downloader
 
         $client->getEngine()->setPath($this->getPhantomjsPath());
 
-//        $request = $client->getMessageFactory()->createRequest($this->url, 'GET');
-
         $request = new Request($this->url, 'GET');
 
-        $request->addSetting('userAgent', $this->getUserAgent());
+        if ($this->randomUserAgent) {
+            $userAgentList = Downloader::USER_AGENT_LIST;
+            $key = array_rand($userAgentList);
+            $userAgent = $userAgentList[$key];
+            $request->addSetting('userAgent', $userAgent);
+        } else {
+            $request->addSetting('userAgent', $this->getUserAgent());
+        }
 
         $response = $client->getMessageFactory()->createResponse();
 
