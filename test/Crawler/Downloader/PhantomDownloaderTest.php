@@ -25,12 +25,6 @@ class PhantomDownloaderTest extends TestCase
         $content = $phantomDownloader->getContent();
 
         self::assertNotEmpty($content);
-
-        preg_match('/\"status\": \"(.*?)\"/is', $content, $status);
-
-        $status = $status[1];
-
-        self::assertSame($status, 'OK');
     }
 
 }

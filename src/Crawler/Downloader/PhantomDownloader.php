@@ -15,7 +15,13 @@ use JonnyW\PhantomJs\Http\Request;
 class PhantomDownloader extends Downloader
 {
 
-    const PHANTOMJS_PATH = __DIR__ . "/../../../bin/phantomjs";
+    const DEFAULT_PHANTOMJS_PATH = __DIR__ . "/../../../bin/phantomjs";
+
+    const DEFAULT_LOAD_IMAGES = true;
+
+    const DEFAULT_JAVASCRIPT_ENABLED = true;
+
+    const DEFAULT_WEB_SECURITY_ENABLED = true;
 
     /**
      * @var string
@@ -39,10 +45,10 @@ class PhantomDownloader extends Downloader
 
     public function __construct($url)
     {
-        $this->phantomjsPath = realpath(self::PHANTOMJS_PATH);
-        $this->loadImages = true;
-        $this->javascriptEnabled = true;
-        $this->webSecurityEnabled = true;
+        $this->phantomjsPath = realpath(PhantomDownloader::DEFAULT_PHANTOMJS_PATH);
+        $this->loadImages = PhantomDownloader::DEFAULT_LOAD_IMAGES;
+        $this->javascriptEnabled = PhantomDownloader::DEFAULT_JAVASCRIPT_ENABLED;
+        $this->webSecurityEnabled = PhantomDownloader::DEFAULT_WEB_SECURITY_ENABLED;
 
         parent::__construct($url);
     }
