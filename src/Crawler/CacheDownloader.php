@@ -33,6 +33,11 @@ class CacheDownloader
      */
     protected $minimumCacheSize;
 
+    /**
+     * @var int
+     */
+    protected $maxRetries;
+
 
     /**
      * CacheDownloader constructor.
@@ -47,6 +52,7 @@ class CacheDownloader
         $this->cacheDirectory = rtrim($cacheDirectory, "/") . "/";
         $this->cacheExtension = $cacheExtension;
         $this->minimumCacheSize = 0;
+        $this->maxRetries = 5;
     }
 
 
@@ -58,8 +64,12 @@ class CacheDownloader
         if ($this->isCached()) {
             $content = $this->getCache();
         } else {
-            $content = $this->downloader->getContent();
-            $this->setCache($content);
+            $retries = 0;
+            do {
+                $retries++;
+                $content = $this->downloader->getContent();
+                $this->setCache($content);
+            } while (!$this->isCached() && $retries <= $this->getMaxRetries());
         }
         return $content;
     }
@@ -176,6 +186,22 @@ class CacheDownloader
     public function setMinimumCacheSize($minimumCacheSize)
     {
         $this->minimumCacheSize = $minimumCacheSize;
+    }
+
+    /**
+     * @return int
+     */
+    public function getMaxRetries()
+    {
+        return $this->maxRetries;
+    }
+
+    /**
+     * @param int $maxRetries
+     */
+    public function setMaxRetries($maxRetries)
+    {
+        $this->maxRetries = $maxRetries;
     }
 
     /**
