@@ -209,7 +209,7 @@ class CacheDownloader
      */
     protected function getCacheSize()
     {
-        return filesize($this->getCacheFile());
+        return filesize($this->getCacheFile()) / 1024;
     }
 
     /**
