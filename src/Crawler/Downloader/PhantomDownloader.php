@@ -23,6 +23,8 @@ class PhantomDownloader extends Downloader
 
     const DEFAULT_WEB_SECURITY_ENABLED = true;
 
+    const DEFAULT_DEBUG = false;
+
     /**
      * @var string
      */
@@ -43,12 +45,24 @@ class PhantomDownloader extends Downloader
      */
     protected $javascriptEnabled;
 
+    /**
+     * @var bool
+     */
+    protected $debug;
+
+    /**
+     * @var array
+     */
+    protected $logs;
+
     public function __construct($url)
     {
         $this->phantomjsPath = realpath(PhantomDownloader::DEFAULT_PHANTOMJS_PATH);
         $this->loadImages = PhantomDownloader::DEFAULT_LOAD_IMAGES;
         $this->javascriptEnabled = PhantomDownloader::DEFAULT_JAVASCRIPT_ENABLED;
         $this->webSecurityEnabled = PhantomDownloader::DEFAULT_WEB_SECURITY_ENABLED;
+        $this->debug = PhantomDownloader::DEFAULT_DEBUG;
+        $this->logs = [];
 
         parent::__construct($url);
     }
@@ -85,28 +99,11 @@ class PhantomDownloader extends Downloader
 
         $client->send($request, $response);
 
+        if ($this->isDebug()) {
+            $this->addLog($client->getLog());
+        }
+
         return $response->getContent();
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getDomDocument()
-    {
-        $content = $this->getContent();
-        $dom = new \DOMDocument();
-        @$dom->loadHTML($content);
-        return $dom;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getDomXpath()
-    {
-        $dom = $this->getDomDocument();
-        $xpath = new \DOMXPath($dom);
-        return $xpath;
     }
 
     /**
@@ -171,6 +168,38 @@ class PhantomDownloader extends Downloader
     public function setJavascriptEnabled($javascriptEnabled)
     {
         $this->javascriptEnabled = $javascriptEnabled;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isDebug()
+    {
+        return $this->debug;
+    }
+
+    /**
+     * @param bool $debug
+     */
+    public function setDebug($debug)
+    {
+        $this->debug = $debug;
+    }
+
+    /**
+     * @return array
+     */
+    public function getLogs()
+    {
+        return $this->logs;
+    }
+
+    /**
+     * @param $log
+     */
+    protected function addLog($log)
+    {
+        array_push($this->logs, $log);
     }
 
 

@@ -73,20 +73,31 @@ abstract class Downloader
      * @return mixed
      */
     public abstract function getContent();
-
+    
     /**
      * Get the DOMDocument of the downloaded content
      *
      * @return \DOMDocument
      */
-    public abstract function getDomDocument();
+    public function getDomDocument()
+    {
+        $content = $this->getContent();
+        $dom = new \DOMDocument();
+        @$dom->loadHTML($content);
+        return $dom;
+    }
 
     /**
      * Get the DOMXPath of the downloaded content
      *
      * @return \DOMXPath
      */
-    public abstract function getDomXpath();
+    public function getDomXpath()
+    {
+        $dom = $this->getDomDocument();
+        $xpath = new \DOMXPath($dom);
+        return $xpath;
+    }
 
     /**
      * @return string
