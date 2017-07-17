@@ -11,5 +11,5 @@ namespace Crawler\Downloader;
 
 class CurlDownloader
 {
-
+// TODO: Implement curldownloader
 }

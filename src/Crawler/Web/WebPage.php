@@ -9,6 +9,10 @@
 
 namespace Crawler\Web;
 
+use Crawler\Downloader\CacheDownloader;
+use Crawler\Downloader\DownloaderType;
+use Crawler\Downloader\PhantomDownloader;
+use Crawler\Downloader\SimpleDownloader;
 use Crawler\XpathQueryBuilder;
 
 class WebPage
@@ -17,23 +21,23 @@ class WebPage
     /**
      * @var string
      */
-    protected $content;
+    protected $url;
 
     /**
-     * @var string
+     * @var CacheDownloader
      */
-    protected $url;
+    protected $cacheDownloader;
 
 
     /**
      * WebPage constructor.
      * @param $url
-     * @param $content
+     * @param $cacheDownloader
      */
-    public function __construct($url, $content)
+    public function __construct($url, $cacheDownloader)
     {
         $this->url = $url;
-        $this->content = $content;
+        $this->cacheDownloader = $cacheDownloader;
     }
 
 
@@ -42,28 +46,23 @@ class WebPage
      */
     public function getContent()
     {
-        return $this->content;
+        return $this->cacheDownloader->getContent($this->url);
     }
 
     /**
-     * @inheritdoc
+     * @return \DOMDocument
      */
     public function getDomDocument()
     {
-        $content = $this->getContent();
-        $dom = new \DOMDocument();
-        @$dom->loadHTML($content);
-        return $dom;
+        return $this->cacheDownloader->getDomDocument($this->url);
     }
 
     /**
-     * @inheritdoc
+     * @return \DOMXPath
      */
     public function getDomXpath()
     {
-        $dom = $this->getDomDocument();
-        $xpath = new \DOMXPath($dom);
-        return $xpath;
+        return $this->cacheDownloader->getDomXpath($this->url);
     }
 
     /**
@@ -114,5 +113,20 @@ class WebPage
         return $this->url;
     }
 
+    /**
+     * @return CacheDownloader
+     */
+    public function getCacheDownloader()
+    {
+        return $this->cacheDownloader;
+    }
+
+    /**
+     * @param CacheDownloader $cacheDownloader
+     */
+    public function setCacheDownloader($cacheDownloader)
+    {
+        $this->cacheDownloader = $cacheDownloader;
+    }
 
 }

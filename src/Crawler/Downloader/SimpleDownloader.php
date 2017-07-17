@@ -14,12 +14,11 @@ class SimpleDownloader extends Downloader
     /**
      * @inheritdoc
      */
-    public function getContent()
+    public function getContent($url)
     {
-        $content = file_get_contents($this->url);
+        $content = file_get_contents($url);
         return $content;
     }
-
 
 
 }

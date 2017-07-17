@@ -7,9 +7,7 @@
  * Time: 18:09
  */
 
-namespace Crawler;
-
-use Crawler\Downloader\Downloader;
+namespace Crawler\Downloader;
 
 class CacheDownloader
 {
@@ -59,47 +57,55 @@ class CacheDownloader
 
 
     /**
+     * @param $url
+     *
      * @return bool|mixed|string
      */
-    public function getContent()
+    public function getContent($url)
     {
-        if ($this->isCached()) {
-            $content = $this->getCache();
+        if ($this->isCached($url)) {
+            $content = $this->getCache($url);
         } else {
-            $content = $this->downloader->getContent();
-            $this->setCache($content);
+            $content = $this->downloader->getContent($url);
+            $this->setCache($url, $content);
         }
         return $content;
     }
 
     /**
+     * @param $url
+     *
      * @return \DOMDocument
      */
-    public function getDomDocument()
+    public function getDomDocument($url)
     {
         $dom = new \DOMDocument();
-        @$dom->loadHTML($this->getContent());
+        @$dom->loadHTML($this->getContent($url));
         return $dom;
     }
 
     /**
+     * @param $url
+     *
      * @return \DOMXPath
      */
-    public function getDomXpath()
+    public function getDomXpath($url)
     {
-        $xpath = new \DOMXPath($this->getDomDocument());
+        $xpath = new \DOMXPath($this->getDomDocument($url));
         return $xpath;
     }
 
     /**
+     * @param $url
+     *
      * @return bool
      */
-    public function isCached()
+    public function isCached($url)
     {
-        if (is_readable($this->getCacheFile())) {
+        if (is_readable($this->getCacheFile($url))) {
             $isValidCache = true;
             if ($this->getMinCacheSize()) {
-                if ($this->getCacheSize() < $this->getMinCacheSize()) {
+                if ($this->getCacheSize($url) < $this->getMinCacheSize()) {
                     $isValidCache = false;
                 }
             }
@@ -109,11 +115,13 @@ class CacheDownloader
     }
 
     /**
+     * @param $url
+     *
      * @return string
      */
-    public function getCacheFile()
+    public function getCacheFile($url)
     {
-        return $this->getExtendedCacheDirectory() . $this->getCacheName() . $this->getCacheExtension();
+        return $this->getExtendedCacheDirectory($url) . $this->getCacheName($url) . $this->getCacheExtension();
     }
 
     /**
@@ -125,31 +133,27 @@ class CacheDownloader
     }
 
     /**
+     * @param $url
+     *
      * @return string
      */
-    public function getExtendedCacheDirectory()
+    public function getExtendedCacheDirectory($url)
     {
         $dir = $this->getCacheDirectory();
         for ($i = 0; $i <= 4; $i += 2) {
-            $dir .= substr($this->getCacheName(), $i, 2) . DIRECTORY_SEPARATOR;
+            $dir .= substr($this->getCacheName($url), $i, 2) . DIRECTORY_SEPARATOR;
         }
         return $dir;
     }
 
     /**
+     * @param $url
+     *
      * @return string
      */
-    public function getUrl()
+    public function getCacheName($url)
     {
-        return $this->downloader->getUrl();
-    }
-
-    /**
-     * @return string
-     */
-    public function getCacheName()
-    {
-        return md5($this->getUrl());
+        return md5($url);
     }
 
     /**
@@ -218,30 +222,36 @@ class CacheDownloader
     }
 
     /**
+     * @param $url
+     *
      * @return int
      */
-    protected function getCacheSize()
+    protected function getCacheSize($url)
     {
-        return filesize($this->getCacheFile()) / 1024;
+        return filesize($this->getCacheFile($url)) / 1024;
     }
 
     /**
+     * @param $url
+     *
      * @return bool|string
      */
-    protected function getCache()
+    protected function getCache($url)
     {
-        return file_get_contents($this->getCacheFile());
+        return file_get_contents($this->getCacheFile($url));
     }
 
     /**
+     * @param $url
      * @param $content
+     *
      * @return bool
      */
-    protected function setCache($content)
+    protected function setCache($url, $content)
     {
 
-        if (!$this->isPresentCacheDirectory()) {
-            if (!$this->createCacheDirectory()) {
+        if (!$this->isPresentCacheDirectory($url)) {
+            if (!$this->createCacheDirectory($url)) {
                 return false;
             }
         }
@@ -251,24 +261,28 @@ class CacheDownloader
             $content = preg_replace($pattern, "", $content);
         }
 
-        file_put_contents($this->getCacheFile(), $content);
+        file_put_contents($this->getCacheFile($url), $content);
         return true;
     }
 
     /**
+     * @param $url
+     *
      * @return bool
      */
-    protected function isPresentCacheDirectory()
+    protected function isPresentCacheDirectory($url)
     {
-        return file_exists($this->getExtendedCacheDirectory());
+        return file_exists($this->getExtendedCacheDirectory($url));
     }
 
     /**
+     * @param $url
+     *
      * @return bool
      */
-    protected function createCacheDirectory()
+    protected function createCacheDirectory($url)
     {
-        return mkdir($this->getExtendedCacheDirectory(), 0777, true);
+        return mkdir($this->getExtendedCacheDirectory($url), 0777, true);
     }
 
 }

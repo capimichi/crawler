@@ -38,11 +38,6 @@ abstract class Downloader
     /**
      * @var string
      */
-    protected $url;
-
-    /**
-     * @var string
-     */
     protected $userAgent;
 
     /**
@@ -57,11 +52,9 @@ abstract class Downloader
 
     /**
      * Downloader constructor.
-     * @param string $url
      */
-    public function __construct($url)
+    public function __construct()
     {
-        $this->url = $url;
         $this->userAgent = Downloader::DEFAULT_USERAGENT;
         $this->timeout = Downloader::DEFAULT_TIMEOUT;
         $this->randomUserAgent = Downloader::DEFAULT_RANDOM_USERAGENT;
@@ -70,18 +63,22 @@ abstract class Downloader
     /**
      * Download the content of the url
      *
+     * @param $url
+     *
      * @return mixed
      */
-    public abstract function getContent();
-    
+    public abstract function getContent($url);
+
     /**
      * Get the DOMDocument of the downloaded content
      *
+     * @param $url
+     *
      * @return \DOMDocument
      */
-    public function getDomDocument()
+    public function getDomDocument($url)
     {
-        $content = $this->getContent();
+        $content = $this->getContent($url);
         $dom = new \DOMDocument();
         @$dom->loadHTML($content);
         return $dom;
@@ -90,11 +87,13 @@ abstract class Downloader
     /**
      * Get the DOMXPath of the downloaded content
      *
+     * @param $url
+     *
      * @return \DOMXPath
      */
-    public function getDomXpath()
+    public function getDomXpath($url)
     {
-        $dom = $this->getDomDocument();
+        $dom = $this->getDomDocument($url);
         $xpath = new \DOMXPath($dom);
         return $xpath;
     }
@@ -102,15 +101,8 @@ abstract class Downloader
     /**
      * @return string
      */
-    public function getUrl()
-    {
-        return $this->url;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUserAgent()
+    public
+    function getUserAgent()
     {
         return $this->userAgent;
     }
@@ -118,7 +110,8 @@ abstract class Downloader
     /**
      * @param string $userAgent
      */
-    public function setUserAgent($userAgent)
+    public
+    function setUserAgent($userAgent)
     {
         $this->userAgent = $userAgent;
     }
@@ -126,7 +119,8 @@ abstract class Downloader
     /**
      * @return int
      */
-    public function getTimeout()
+    public
+    function getTimeout()
     {
         return $this->timeout;
     }
@@ -134,7 +128,8 @@ abstract class Downloader
     /**
      * @param int $timeout
      */
-    public function setTimeout($timeout)
+    public
+    function setTimeout($timeout)
     {
         $this->timeout = $timeout;
     }
@@ -142,7 +137,8 @@ abstract class Downloader
     /**
      * @return bool
      */
-    public function isRandomUserAgent()
+    public
+    function isRandomUserAgent()
     {
         return $this->randomUserAgent;
     }
@@ -150,7 +146,8 @@ abstract class Downloader
     /**
      * @param bool $randomUserAgent
      */
-    public function setRandomUserAgent($randomUserAgent)
+    public
+    function setRandomUserAgent($randomUserAgent)
     {
         $this->randomUserAgent = $randomUserAgent;
     }

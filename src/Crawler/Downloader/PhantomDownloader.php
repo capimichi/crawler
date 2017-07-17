@@ -55,7 +55,7 @@ class PhantomDownloader extends Downloader
      */
     protected $logs;
 
-    public function __construct($url)
+    public function __construct()
     {
         $this->phantomjsPath = realpath(PhantomDownloader::DEFAULT_PHANTOMJS_PATH);
         $this->loadImages = PhantomDownloader::DEFAULT_LOAD_IMAGES;
@@ -64,19 +64,19 @@ class PhantomDownloader extends Downloader
         $this->debug = PhantomDownloader::DEFAULT_DEBUG;
         $this->logs = [];
 
-        parent::__construct($url);
+        parent::__construct();
     }
 
     /**
      * @inheritdoc
      */
-    public function getContent()
+    public function getContent($url)
     {
         $client = Client::getInstance();
 
         $client->getEngine()->setPath($this->getPhantomjsPath());
 
-        $request = new Request($this->url, 'GET');
+        $request = new Request($url, 'GET');
 
         if ($this->randomUserAgent) {
             $userAgentList = Downloader::USER_AGENT_LIST;
