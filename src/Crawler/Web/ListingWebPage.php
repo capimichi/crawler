@@ -16,22 +16,23 @@ namespace Crawler\Web;
 abstract class ListingWebPage extends WebPage
 {
     /**
-     * @return mixed
+     * @return array
      */
     public abstract function getChildren();
 
     /**
-     * @return mixed
+     * @return string|null
      */
-    public abstract function getChildUrls();
+    public function getNextPageUrl()
+    {
+        return null;
+    }
 
     /**
-     * @return mixed
+     * @return int
      */
-    public abstract function getNextPageUrl();
-
-    /**
-     * @return mixed
-     */
-    public abstract function getPagesCount();
+    public function getPagesCount()
+    {
+        return 0;
+    }
 }

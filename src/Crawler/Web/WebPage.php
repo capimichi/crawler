@@ -107,7 +107,7 @@ class WebPage
 
     public function getClasses()
     {
-        
+
     }
 
     /**
