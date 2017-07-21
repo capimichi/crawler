@@ -28,6 +28,15 @@ class WebPage
      */
     protected $cacheDownloader;
 
+    /**
+     * The regex pattern to search in page
+     * if found, it means that the website find out that you are a bot
+     * else your successful crawled the page
+     *
+     * @var string|null
+     */
+    protected $botPattern;
+
 
     /**
      * WebPage constructor.
@@ -38,6 +47,7 @@ class WebPage
     {
         $this->url = $url;
         $this->cacheDownloader = $cacheDownloader;
+        $this->botPattern = null;
     }
 
 
@@ -105,9 +115,36 @@ class WebPage
         return null;
     }
 
+    /**
+     * @return array
+     */
     public function getClasses()
     {
+        $classes = [];
+        $content = $this->getContent();
+        if (preg_match_all("//is", $content, $contentClasses)) {
+            $contentClasses = $contentClasses[1];
+            foreach ($contentClasses as $contentClass) {
+                $splittedClasses = explode(' ', $contentClass);
+                foreach ($splittedClasses as $splittedClass) {
+                    array_push($classes, $splittedClass);
+                }
+            }
+        }
+        return array_count_values($classes);
+    }
 
+    /**
+     * @return bool
+     * @throws \Exception
+     */
+    public function isCrawlSuccessful()
+    {
+        if ($this->getBotPattern()) {
+            return !preg_match($this->getBotPattern(), $this->getContent());
+        } else {
+            throw new \Exception("No bot pattern set, unknown crawl result");
+        }
     }
 
     /**
@@ -133,5 +170,22 @@ class WebPage
     {
         $this->cacheDownloader = $cacheDownloader;
     }
+
+    /**
+     * @return string
+     */
+    public function getBotPattern()
+    {
+        return $this->botPattern;
+    }
+
+    /**
+     * @param string $botPattern
+     */
+    public function setBotPattern($botPattern)
+    {
+        $this->botPattern = $botPattern;
+    }
+
 
 }
