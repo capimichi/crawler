@@ -105,6 +105,11 @@ class WebPage
         return null;
     }
 
+    public function getClasses()
+    {
+        
+    }
+
     /**
      * @return string
      */

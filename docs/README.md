@@ -6,18 +6,32 @@ Use this library to scrape your favourite websites.
 ```php
 <?php
 
-use Crawler\Downloader\PhantomDownloader;
+use Crawler\Downloader\CacheDownloader;
+use Crawler\Downloader\SimpleDownloader;
 
-$phantomDownloader = new PhantomDownloader("https://capimichi.github.io/crawler/test/download.json");
-```
+require_once "/path/to/composer/autoload.php";
 
-### You can even set up cache
-```php
-<?php
+$startUrl = "http://random-url.com/";
 
-use Crawler\Downloader\PhantomDownloader;
-use Crawler\CacheDownloader;
+$downloader = new SimpleDownloader();
+$cacheDownloader = new CacheDownloader($downloader, __DIR__ . "/var/cache/", ".html");
+$mainCategoriesWebPage = new MainCategoriesWebPage($startUrl, $cacheDownloader);
 
-$phantomDownloader = new PhantomDownloader("https://capimichi.github.io/crawler/test/download.json");
-$cacheDownloader = new CacheDownloader($phantomDownloader, "/path/to/cache/directory");
+$categoryUrls = $mainCategoriesWebPage->getCategoryUrls();
+
+foreach ($categoryUrls as $categoryUrl) {
+
+    do {
+        $productsWebPage = new ProductsWebPage($categoryUrl, $cacheDownloader);
+
+        $productUrls = $productsWebPage->getChildUrls();
+
+        foreach ($productUrls as $productUrl) {
+            $productWebPage = new ProductWebPage($productUrl, $cacheDownloader);
+            $title = $productWebPage->getTitle();
+        }
+
+        $categoryUrl = $productsWebPage->getNextPageUrl();
+    } while ($categoryUrl != null);
+}
 ```
