@@ -20,9 +20,10 @@ class PhantomDownloaderTest extends TestCase
      */
     public function testCanDownload()
     {
-        $phantomDownloader = new PhantomDownloader("https://capimichi.github.io/crawler/test/download.json");
+        $url = "https://capimichi.github.io/crawler/test/download.json";
+        $phantomDownloader = new PhantomDownloader();
 
-        $content = $phantomDownloader->getContent();
+        $content = $phantomDownloader->getContent($url);
 
         self::assertNotEmpty($content);
     }
