@@ -82,8 +82,16 @@ class CacheDownloader
      */
     public function getDomDocument($url)
     {
-        $dom = new \DOMDocument();
-        @$dom->loadHTML($this->getContent($url));
+        $cache = $this->getCache($url);
+        if ($cache->isCached('dom')) {
+            $dom = new \DOMDocument();
+            $dom->loadXML($cache->retrieve('dom'));
+        } else {
+            $dom = new \DOMDocument();
+            @$dom->loadHTML($this->getContent($url));
+            $cache->store('dom', $dom->saveXML());
+        }
+
         return $dom;
     }
 
