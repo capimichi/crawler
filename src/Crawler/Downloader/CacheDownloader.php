@@ -70,6 +70,9 @@ class CacheDownloader
             $content = $cache->retrieve('content');
         } else {
             $content = $this->downloader->getContent($url);
+            foreach ($this->getStrippedHtmlTags() as $strippedHtmlTag) {
+                $content = preg_replace("/<{$strippedHtmlTag}.*?>.*?<\/{$strippedHtmlTag}>/is", "", $content);
+            }
             $cache->store('content', $content);
         }
         return $content;
@@ -82,16 +85,8 @@ class CacheDownloader
      */
     public function getDomDocument($url)
     {
-        $cache = $this->getCache($url);
-        if ($cache->isCached('dom')) {
-            $dom = new \DOMDocument();
-            $dom->loadXML($cache->retrieve('dom'));
-        } else {
-            $dom = new \DOMDocument();
-            @$dom->loadHTML($this->getContent($url));
-            $cache->store('dom', $dom->saveXML());
-        }
-
+        $dom = new \DOMDocument();
+        @$dom->loadHTML($this->getContent($url));
         return $dom;
     }
 
