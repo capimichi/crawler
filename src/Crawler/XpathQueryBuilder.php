@@ -93,6 +93,40 @@ class XpathQueryBuilder
     }
 
     /**
+     * Currently working only with .class and #id and selector
+     *
+     * @param $expression
+     *
+     * @return XpathQueryBuilder
+     */
+    public function addQueryByCss($expression)
+    {
+        $pieces = explode(' ', $expression);
+        foreach ($pieces as $piece) {
+            $isTag = true;
+            if (preg_match('/\./is', $piece)) {
+                $pieceSplit = explode(".", $piece);
+                $selector = empty($pieceSplit[0]) ? "*" : $pieceSplit[0];
+                $class = $pieceSplit[1];
+                $this->addQueryByClass($class, $selector);
+                $isTag = false;
+            }
+            if (preg_match('/\#/is', $piece)) {
+                $pieceSplit = explode("#", $piece);
+                $selector = empty($pieceSplit[0]) ? "*" : $pieceSplit[0];
+                $id = $pieceSplit[1];
+                $this->addQueryById($id, $selector);
+                $isTag = false;
+            }
+            if ($isTag) {
+                $this->addQueryBySelector($piece);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
      * @param $class
      * @param $selector
      *
