@@ -205,6 +205,40 @@ class XpathQueryBuilder
     }
 
     /**
+     * @return \DOMElement
+     */
+    public function getResult()
+    {
+        $nodes = $this->domXpath->query($this->query);
+        $selected = null;
+        foreach ($nodes as $node) {
+            $selected = $node;
+        }
+        return $selected;
+    }
+
+    /**
+     * @return array
+     */
+    public function getResultsValues()
+    {
+        $nodes = $this->domXpath->query($this->query);
+        $values = [];
+        foreach ($nodes as $node) {
+            $values[] = $node->nodeValue;
+        }
+        return $values;
+    }
+
+    /**
+     * @return string|null
+     */
+    public function getResultValue()
+    {
+        return $this->getResult() ? $this->getResult()->nodeValue : null;
+    }
+
+    /**
      * @param \DOMNode $child
      * @return \DOMNodeList
      */
@@ -212,6 +246,44 @@ class XpathQueryBuilder
     {
         return $this->domXpath->query("." . $this->query, $child);
     }
+
+    /**
+     * @param \DOMNode $child
+     * @return \DOMElement
+     */
+    public function getResultFromChild($child)
+    {
+        $nodes = $this->domXpath->query("." . $this->query, $child);
+        $selected = null;
+        foreach ($nodes as $node) {
+            $selected = $node;
+        }
+        return $selected;
+    }
+
+    /**
+     * @param \DOMNode $child
+     * @return array
+     */
+    public function getResultsValuesFromChild($child)
+    {
+        $nodes = $this->domXpath->query("." . $this->query, $child);
+        $values = [];
+        foreach ($nodes as $node) {
+            $values[] = $node->nodeValue;
+        }
+        return $values;
+    }
+
+    /**
+     * @param \DOMNode $child
+     * @return string|null
+     */
+    public function getResultValueFromChild($child)
+    {
+        return $this->getResultFromChild($child) ? $this->getResultFromChild($child)->nodeValue : null;
+    }
+
 
     /**
      * Clear the query
