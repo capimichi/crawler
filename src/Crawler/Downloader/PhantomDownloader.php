@@ -15,7 +15,9 @@ use JonnyW\PhantomJs\Http\Request;
 class PhantomDownloader extends Downloader
 {
 
-    const DEFAULT_PHANTOMJS_PATH = __DIR__ . "/../../../bin/phantomjs";
+    const BIN_DIR = __DIR__ . "/../../../bin/";
+
+    const DOWNLOAD_SCRIPT = self::BIN_DIR . "download.js";
 
     const DEFAULT_LOAD_IMAGES = true;
 
@@ -57,7 +59,7 @@ class PhantomDownloader extends Downloader
 
     public function __construct()
     {
-        $this->phantomjsPath = realpath(PhantomDownloader::DEFAULT_PHANTOMJS_PATH);
+        $this->phantomjsPath = realpath(PhantomDownloader::BIN_DIR) . "/phantomjs";
         $this->loadImages = PhantomDownloader::DEFAULT_LOAD_IMAGES;
         $this->javascriptEnabled = PhantomDownloader::DEFAULT_JAVASCRIPT_ENABLED;
         $this->webSecurityEnabled = PhantomDownloader::DEFAULT_WEB_SECURITY_ENABLED;
@@ -72,38 +74,20 @@ class PhantomDownloader extends Downloader
      */
     public function getContent($url)
     {
-        $client = Client::getInstance();
 
-        $client->getEngine()->setPath($this->getPhantomjsPath());
-
-        $request = new Request($url, 'GET');
-
-        if ($this->randomUserAgent) {
-            $userAgentList = Downloader::USER_AGENT_LIST;
-            $key = array_rand($userAgentList);
-            $userAgent = $userAgentList[$key];
-            $request->addSetting('userAgent', $userAgent);
-        } else {
-            $request->addSetting('userAgent', $this->getUserAgent());
-        }
-
-        $request->addSetting('javascriptEnabled', $this->isJavascriptEnabled());
-
-        $request->addSetting('loadImages', $this->isLoadImages());
-
-        $request->addSetting('webSecurityEnabled', $this->isWebSecurityEnabled());
-
-        $request->setTimeout($this->getTimeout());
-
-        $response = $client->getMessageFactory()->createResponse();
-
-        $client->send($request, $response);
-
-        if ($this->isDebug()) {
-            $this->addLog($client->getLog());
-        }
-
-        return $response->getContent();
+        $command = sprintf("%s %s \"%s\" %d %d %d \"%s\" %d",
+            $this->getPhantomjsPath(),
+            realpath(PhantomDownloader::DOWNLOAD_SCRIPT),
+            $url,
+            $this->getTimeout(),
+            $this->isJavascriptEnabled(),
+            $this->isLoadImages(),
+            $this->getUserAgent(),
+            $this->isWebSecurityEnabled()
+        );
+        exec($command, $content);
+        $content = implode("", $content);
+        return $content;
     }
 
     /**
